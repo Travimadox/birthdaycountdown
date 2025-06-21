@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birthday Countdown ✨</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header {
+            margin-bottom: 40px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            background: linear-gradient(45deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 3s ease infinite;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .photo-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin: 40px 0;
+            animation: fadeInUp 1s ease-out 0.5s both;
+        }
+
+        .photo-frame {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .photo-frame:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .photo-frame img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 15px;
+            transition: transform 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .photo-frame:hover img {
+            transform: scale(1.02);
+        }
+
+        .photo-caption {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+            font-style: italic;
+        }
+
+        .countdown {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            padding: 40px;
+            margin: 40px 0;
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            animation: fadeIn 1s ease-out 1s both;
+        }
+
+        .countdown h2 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .timer {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .time-unit {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 20px;
+            padding: 25px;
+            min-width: 120px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .time-unit:hover {
+            transform: scale(1.1);
+        }
+
+        .time-number {
+            font-size: 3rem;
+            font-weight: bold;
+            display: block;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .time-label {
+            font-size: 1rem;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .birthday-message {
+            display: none;
+            background: linear-gradient(135deg, #ff6b6b, #feca57);
+            border-radius: 30px;
+            padding: 60px;
+            margin: 40px 0;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: celebrationPulse 2s ease infinite;
+        }
+
+        .birthday-message h2 {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+        }
+
+        .birthday-message p {
+            font-size: 1.5rem;
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .confetti {
+            position: fixed;
+            top: -10px;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .hearts {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+            top: 0;
+            left: 0;
+        }
+
+        .heart {
+            position: absolute;
+            color: #ff6b6b;
+            font-size: 20px;
+            animation: floatHeart 3s ease-in-out infinite;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes celebrationPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        @keyframes floatHeart {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .photo-gallery {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 20px;
+            }
+            
+            .photo-frame img {
+                height: 200px;
+            }
+            
+            .timer {
+                gap: 15px;
+            }
+            
+            .time-unit {
+                min-width: 100px;
+                padding: 20px;
+            }
+            
+            .time-number {
+                font-size: 2rem;
+            }
+            
+            .birthday-message h2 {
+                font-size: 2.5rem;
+            }
+            
+            .birthday-message p {
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .photo-gallery {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+            
+            .countdown {
+                padding: 30px 20px;
+            }
+            
+            .birthday-message {
+                padding: 40px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>✨ Birthday Countdown ✨</h1>
+            <p class="subtitle">Something magical is coming...</p>
+        </div>
+
+        <div class="photo-gallery">
+            <div class="photo-frame">
+                <img src="images/tk1.jpeg" alt="Beautiful Memory 1" loading="lazy">
+                <div class="photo-caption">✨ Beautiful moments together ✨</div>
+            </div>
+            <div class="photo-frame">
+                <img src="images/tk2.jpeg" alt="Beautiful Memory 2" loading="lazy">
+                <div class="photo-caption">💕 Sweet memories we've made 💕</div>
+            </div>
+            <div class="photo-frame">
+                <img src="images/tk3.jpeg" alt="Beautiful Memory 3" loading="lazy">
+                <div class="photo-caption">🌟 Adventures we've shared 🌟</div>
+            </div>
+            <div class="photo-frame">
+                <img src="images/tk4.jpeg" alt="Beautiful Memory 4" loading="lazy">
+                <div class="photo-caption">💖 Love captured in time 💖</div>
+            </div>
+        </div>
+
+        <div class="countdown" id="countdown">
+            <h2>Time Until The Special Day</h2>
+            <div class="timer">
+                <div class="time-unit">
+                    <span class="time-number" id="days">0</span>
+                    <span class="time-label">Days</span>
+                </div>
+                <div class="time-unit">
+                    <span class="time-number" id="hours">0</span>
+                    <span class="time-label">Hours</span>
+                </div>
+                <div class="time-unit">
+                    <span class="time-number" id="minutes">0</span>
+                    <span class="time-label">Minutes</span>
+                </div>
+                <div class="time-unit">
+                    <span class="time-number" id="seconds">0</span>
+                    <span class="time-label">Seconds</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="birthday-message" id="birthdayMessage">
+            <h2>🎉 Happy Birthday! 🎉</h2>
+            <p>Today is your special day! You bring so much joy, love, and light into this world. May this new year of your life be filled with incredible adventures, beautiful moments, and all the happiness your heart can hold. You are truly amazing, and I'm so grateful to have you in my life. Here's to celebrating you today and always! 💕✨</p>
+        </div>
+    </div>
+
+    <div class="hearts" id="hearts"></div>
+
+    <script>
+        // Set birthday date - June 24, 2025
+        const birthdayDate = new Date('2025-06-24T00:00:00').getTime();
+        let nextBirthdayDate = birthdayDate;
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = nextBirthdayDate - now;
+
+            // Check if it's birthday (June 24th)
+            const today = new Date();
+            const isBirthdayToday = (today.getMonth() === 5 && today.getDate() === 24); // Month is 0-indexed
+
+            if (isBirthdayToday) {
+                // Show birthday message
+                document.getElementById('countdown').style.display = 'none';
+                document.getElementById('birthdayMessage').style.display = 'block';
+                
+                // Start confetti and hearts
+                createConfetti();
+                createHearts();
+                return;
+            }
+
+            // If birthday has passed this year, set next year's birthday
+            if (distance < 0 && !isBirthdayToday) {
+                const currentYear = new Date().getFullYear();
+                nextBirthdayDate = new Date(`${currentYear + 1}-06-24T00:00:00`).getTime();
+                updateCountdown();
+                return;
+            }
+
+            // Hide birthday message and show countdown
+            document.getElementById('countdown').style.display = 'block';
+            document.getElementById('birthdayMessage').style.display = 'none';
+
+            // Calculate time units
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // Update display
+            document.getElementById('days').textContent = days.toString().padStart(2, '0');
+            document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+            document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+            document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+        }
+
+        function createConfetti() {
+            const colors = ['#ff6b6b', '#feca57', '#48dbfb', '#ff9ff3', '#54a0ff'];
+            
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.width = confetti.style.height = Math.random() * 10 + 5 + 'px';
+                    confetti.style.animation = `drop ${Math.random() * 3 + 2}s linear forwards`;
+                    
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => {
+                        confetti.remove();
+                    }, 5000);
+                }, i * 100);
+            }
+        }
+
+        function createHearts() {
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.innerHTML = '💕';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDuration = (Math.random() * 2 + 3) + 's';
+                heart.style.animationDelay = Math.random() * 2 + 's';
+                
+                document.getElementById('hearts').appendChild(heart);
+                
+                setTimeout(() => {
+                    heart.remove();
+                }, 5000);
+            }, 1000);
+        }
+
+        // Add drop animation for confetti
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes drop {
+                to {
+                    transform: translateY(100vh) rotate(360deg);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Update countdown every second
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+
+        // Add some floating hearts on load
+        setTimeout(createHearts, 2000);
+
+        // Add error handling for images
+        document.querySelectorAll('img').forEach(img => {
+            img.onerror = function() {
+                this.style.display = 'none';
+                this.parentElement.innerHTML += '<div style="padding: 40px; color: rgba(255,255,255,0.7); font-size: 0.9rem;">Image not found<br>Please check: images/' + this.src.split('/').pop() + '</div>';
+            };
+        });
+    </script>
+</body>
+</html>
